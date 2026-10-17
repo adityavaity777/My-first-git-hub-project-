@@ -1,1 +1,171 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+    <meta property="og:image" content="https://bolt.new/static/og_default.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://bolt.new/static/og_default.png">
+</head>
+  <body>
+    <!-- ===== App shell ===== -->
+    <div class="app">
+
+      <!-- ===== Top header bar ===== -->
+      <header class="header">
+        <div class="header-inner">
+          <div class="brand">
+            <span class="brand-mark">SD</span>
+            <div>
+              <h1 class="brand-title">Student Dashboard</h1>
+              <p class="brand-sub">Track your academic performance and ranking</p>
+            </div>
+          </div>
+          <div class="header-actions">
+            <button id="resetBtn" class="btn btn-ghost" type="button" title="Reset to sample data">Reset data</button>
+            <button id="addToggleBtn" class="btn btn-primary" type="button">+ Add test score</button>
+          </div>
+        </div>
+      </header>
+
+      <main class="content">
+        <!-- ===== Loading state: shown while data initializes ===== -->
+        <section id="loadingState" class="state state-loading">
+          <div class="spinner" aria-hidden="true"></div>
+          <p>Loading your dashboard…</p>
+        </section>
+
+        <!-- ===== Error state: shown if something goes wrong ===== -->
+        <section id="errorState" class="state state-error hidden">
+          <p>Something went wrong while loading your dashboard.</p>
+          <button class="btn btn-primary" onclick="location.reload()">Reload</button>
+        </section>
+
+        <!-- ===== Empty state: shown when no student data exists ===== -->
+        <section id="emptyState" class="state state-empty hidden">
+          <p>No student data yet. Add a test score to get started.</p>
+          <button class="btn btn-primary" id="emptyAddBtn" type="button">+ Add your first score</button>
+        </section>
+
+        <!-- ===== Main dashboard: shown when data is ready ===== -->
+        <section id="dashboard" class="hidden">
+
+          <!-- === Rank card: shows the student's current overall rank === -->
+          <div class="rank-card">
+            <div class="rank-medal" id="rankMedal">#1</div>
+            <div class="rank-body">
+              <p class="rank-label">Your overall rank</p>
+              <h2 class="rank-value"><span id="rankNumber">#1</span> <span class="rank-total">of <span id="rankTotal">12</span></span></h2>
+              <p class="rank-name" id="rankStudentName">—</p>
+            </div>
+            <div class="rank-avg">
+              <p class="rank-avg-label">Class average</p>
+              <p class="rank-avg-value" id="classAverage">0%</p>
+            </div>
+          </div>
+
+          <!-- === Stats cards: quick numeric summaries === -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <p class="stat-label">Overall average</p>
+              <p class="stat-value" id="statOverall">0%</p>
+            </div>
+            <div class="stat-card">
+              <p class="stat-label">Tests taken</p>
+              <p class="stat-value" id="statTests">0</p>
+            </div>
+            <div class="stat-card">
+              <p class="stat-label">Best subject</p>
+              <p class="stat-value" id="statBest">—</p>
+            </div>
+            <div class="stat-card">
+              <p class="stat-label">Improvement</p>
+              <p class="stat-value" id="statTrend">—</p>
+            </div>
+          </div>
+
+          <!-- === Subject bars: each subject vs the class average === -->
+          <section class="panel">
+            <div class="panel-head">
+              <h3>Subject performance</h3>
+              <span class="panel-hint">Bar vs class average (dashed line)</span>
+            </div>
+            <div id="subjectBars" class="subject-bars"></div>
+          </section>
+
+          <!-- === Leaderboard with search, section filter, and sort === -->
+          <section class="panel">
+            <div class="panel-head">
+              <h3>Leaderboard</h3>
+            </div>
+
+            <div class="toolbar">
+              <input id="searchInput" class="input" type="search" placeholder="Search students…" />
+              <select id="sectionFilter" class="input">
+                <option value="all">All sections</option>
+              </select>
+              <select id="sortBy" class="input">
+                <option value="average-desc">Highest average</option>
+                <option value="average-asc">Lowest average</option>
+                <option value="name-asc">Name A–Z</option>
+                <option value="name-desc">Name Z–A</option>
+              </select>
+            </div>
+
+            <div class="leaderboard-wrap">
+              <table class="leaderboard">
+                <thead>
+                  <tr>
+                    <th class="col-rank">Rank</th>
+                    <th class="col-name">Student</th>
+                    <th class="col-section">Section</th>
+                    <th class="col-avg">Average</th>
+                    <th class="col-tests">Tests</th>
+                  </tr>
+                </thead>
+                <tbody id="leaderboardBody"></tbody>
+              </table>
+              <p id="noResults" class="no-results hidden">No students match your search.</p>
+            </div>
+          </section>
+
+          <!-- === Add score form (toggled by the header button) === -->
+          <section id="addFormPanel" class="panel add-form-panel hidden">
+            <div class="panel-head">
+              <h3>Add a test score</h3>
+              <button class="btn btn-ghost btn-sm" id="closeFormBtn" type="button">Close</button>
+            </div>
+
+            <form id="scoreForm" class="score-form">
+              <div class="form-row">
+                <label class="form-field">
+                  <span>Student</span>
+                  <select id="formStudent" class="input" required></select>
+                </label>
+                <label class="form-field">
+                  <span>Subject</span>
+                  <select id="formSubject" class="input" required></select>
+                </label>
+              </div>
+              <div class="form-row">
+                <label class="form-field">
+                  <span>Score (0–100)</span>
+                  <input id="formScore" class="input" type="number" min="0" max="100" required />
+                </label>
+                <div class="form-field form-submit">
+                  <button class="btn btn-primary" type="submit">Save score</button>
+                </div>
+              </div>
+              <p id="formMessage" class="form-message hidden"></p>
+            </form>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="script.js"></script>
+  </body>
+</html>
 
