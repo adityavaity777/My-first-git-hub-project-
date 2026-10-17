@@ -1,1 +1,317 @@
+/* =========================================================================
+   Student Dashboard — styles
+   A clean, modern, responsive design using a blue/neutral palette.
+   Uses CSS custom properties (variables) so colors and spacing are
+   easy to tweak in one place.
+   ========================================================================= */
+
+/* ---- 1. Design tokens (the "color system" and spacing scale) ---- */
+:root {
+  /* Primary / accent ramps */
+  --primary-50:  #eef4ff;
+  --primary-100: #d8e6ff;
+  --primary-500: #2563eb;   /* main blue */
+  --primary-600: #1d4ed8;
+  --primary-700: #1e40af;
+
+  /* Neutral ramps (grays) */
+  --neutral-0:   #ffffff;
+  --neutral-50:  #f8fafc;
+  --neutral-100: #f1f5f9;
+  --neutral-200: #e2e8f0;
+  --neutral-400: #94a3b8;
+  --neutral-600: #475569;
+  --neutral-700: #334155;
+  --neutral-900: #0f172a;
+
+  /* Semantic colors */
+  --success: #16a34a;
+  --success-bg: #dcfce7;
+  --warning: #d97706;
+  --warning-bg: #fef3c7;
+  --error:   #dc2626;
+  --error-bg: #fee2e2;
+
+  /* Spacing scale (8px base) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+
+  /* Radii and shadows */
+  --radius:    12px;
+  --radius-sm: 8px;
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08);
+  --shadow:    0 4px 16px rgba(15, 23, 42, 0.10);
+
+  --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+/* ---- 2. Base / reset ---- */
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  background: var(--neutral-100);
+  color: var(--neutral-900);
+  line-height: 1.5;
+}
+
+h1, h2, h3, p { margin: 0; }
+
+.hidden { display: none !important; }
+
+/* ---- 3. Header ---- */
+.header {
+  background: var(--neutral-0);
+  border-bottom: 1px solid var(--neutral-200);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+.brand { display: flex; align-items: center; gap: var(--space-3); }
+.brand-mark {
+  width: 44px; height: 44px;
+  border-radius: var(--radius-sm);
+  background: var(--primary-500);
+  color: #fff;
+  font-weight: 700;
+  font-size: 18px;
+  display: grid; place-items: center;
+}
+.brand-title { font-size: 20px; font-weight: 700; }
+.brand-sub { font-size: 13px; color: var(--neutral-400); }
+.header-actions { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+
+/* ---- 4. Buttons ---- */
+.btn {
+  font: inherit;
+  font-weight: 600;
+  font-size: 14px;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background .15s, transform .1s, box-shadow .15s;
+}
+.btn:active { transform: scale(.97); }
+.btn-primary { background: var(--primary-500); color: #fff; }
+.btn-primary:hover { background: var(--primary-600); }
+.btn-ghost { background: transparent; color: var(--neutral-600); border: 1px solid var(--neutral-200); }
+.btn-ghost:hover { background: var(--neutral-50); }
+.btn-sm { padding: 6px 12px; font-size: 13px; }
+
+/* ---- 5. Layout ---- */
+.content {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* ---- 6. State screens (loading / error / empty) ---- */
+.state {
+  text-align: center;
+  padding: var(--space-7) var(--space-5);
+  color: var(--neutral-600);
+}
+.spinner {
+  width: 40px; height: 40px;
+  margin: 0 auto var(--space-4);
+  border: 4px solid var(--neutral-200);
+  border-top-color: var(--primary-500);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.state-error { color: var(--error); }
+.state-error .btn { margin-top: var(--space-4); }
+
+/* ---- 7. Rank card ---- */
+.rank-card {
+  background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
+  color: #fff;
+  border-radius: var(--radius);
+  padding: var(--space-5);
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  box-shadow: var(--shadow);
+}
+.rank-medal {
+  font-size: 36px;
+  font-weight: 800;
+  background: rgba(255,255,255,.15);
+  width: 84px; height: 84px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  flex-shrink: 0;
+}
+.rank-body { flex: 1; }
+.rank-label { font-size: 13px; opacity: .8; }
+.rank-value { font-size: 28px; font-weight: 800; margin-top: 2px; }
+.rank-total { font-size: 16px; font-weight: 500; opacity: .8; }
+.rank-name { font-size: 14px; opacity: .9; margin-top: 2px; }
+.rank-avg { text-align: right; }
+.rank-avg-label { font-size: 12px; opacity: .8; }
+.rank-avg-value { font-size: 22px; font-weight: 700; }
+
+/* ---- 8. Stats grid ---- */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+}
+.stat-card {
+  background: var(--neutral-0);
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-sm);
+}
+.stat-label { font-size: 12px; color: var(--neutral-400); text-transform: uppercase; letter-spacing: .04em; }
+.stat-value { font-size: 24px; font-weight: 700; margin-top: var(--space-1); }
+
+/* ---- 9. Panels (shared card container) ---- */
+.panel {
+  background: var(--neutral-0);
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
+}
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+}
+.panel-head h3 { font-size: 18px; }
+.panel-hint { font-size: 12px; color: var(--neutral-400); }
+
+/* ---- 10. Subject bars ---- */
+.subject-bars { display: flex; flex-direction: column; gap: var(--space-4); }
+.subject-row .subject-meta {
+  display: flex; justify-content: space-between; font-size: 14px; margin-bottom: var(--space-1);
+}
+.subject-meta .subject-name { font-weight: 600; }
+.subject-meta .subject-vals { color: var(--neutral-400); }
+.subject-track {
+  position: relative;
+  height: 28px;
+  background: var(--neutral-100);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+/* The student's score fills from the left */
+.subject-fill {
+  position: absolute; top: 0; left: 0; bottom: 0;
+  background: var(--primary-500);
+  border-radius: var(--radius-sm);
+  transition: width .6s ease;
+}
+/* The class-average marker is a dashed vertical line */
+.subject-avg-marker {
+  position: absolute; top: 0; bottom: 0;
+  width: 0;
+  border-left: 2px dashed var(--neutral-600);
+  z-index: 2;
+}
+.subject-avg-label {
+  position: absolute;
+  top: -18px;
+  transform: translateX(-50%);
+  font-size: 10px;
+  color: var(--neutral-600);
+  white-space: nowrap;
+}
+
+/* ---- 11. Toolbar (search / filter / sort) ---- */
+.toolbar {
+  display: flex;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  flex-wrap: wrap;
+}
+.input {
+  font: inherit;
+  font-size: 14px;
+  padding: 9px 12px;
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-sm);
+  background: var(--neutral-0);
+  color: var(--neutral-900);
+}
+.input:focus { outline: 2px solid var(--primary-100); border-color: var(--primary-500); }
+#searchInput { flex: 1; min-width: 180px; }
+
+/* ---- 12. Leaderboard table ---- */
+.leaderboard-wrap { overflow-x: auto; }
+.leaderboard { width: 100%; border-collapse: collapse; }
+.leaderboard th, .leaderboard td {
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--neutral-200);
+}
+.leaderboard th {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--neutral-400);
+}
+.leaderboard tbody tr { transition: background .12s; }
+.leaderboard tbody tr:hover { background: var(--neutral-50); }
+.leaderboard .you-row { background: var(--primary-50); font-weight: 600; }
+.col-rank { width: 60px; }
+.col-avg, .col-tests { text-align: right; }
+.no-results { text-align: center; color: var(--neutral-400); padding: var(--space-5); }
+.rank-badge {
+  display: inline-grid; place-items: center;
+  width: 28px; height: 28px; border-radius: 50%;
+  font-weight: 700; font-size: 13px;
+  background: var(--neutral-100); color: var(--neutral-700);
+}
+.rank-badge.top1 { background: #fde68a; color: #92400e; } /* gold */
+.rank-badge.top2 { background: #e2e8f0; color: #334155; } /* silver */
+.rank-badge.top3 { background: #fcd9b6; color: #9a3412; } /* bronze */
+
+/* ---- 13. Add-score form ---- */
+.add-form-panel { border-color: var(--primary-100); }
+.score-form { display: flex; flex-direction: column; gap: var(--space-4); }
+.form-row { display: flex; gap: var(--space-4); flex-wrap: wrap; }
+.form-field { display: flex; flex-direction: column; gap: var(--space-1); flex: 1; min-width: 200px; }
+.form-field span { font-size: 13px; font-weight: 600; color: var(--neutral-600); }
+.form-submit { justify-content: flex-end; }
+.form-message { font-size: 14px; font-weight: 600; padding: var(--space-3); border-radius: var(--radius-sm); }
+.form-message.success { background: var(--success-bg); color: var(--success); }
+.form-message.error { background: var(--error-bg); color: var(--error); }
+
+/* ---- 14. Responsive breakpoints ---- */
+@media (max-width: 900px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .stats-grid { grid-template-columns: 1fr; }
+  .rank-card { flex-direction: column; text-align: center; }
+  .rank-avg { text-align: center; }
+  .header-inner { flex-direction: column; align-items: stretch; }
+  .header-actions { justify-content: stretch; }
+  .header-actions .btn { flex: 1; }
+}
 
